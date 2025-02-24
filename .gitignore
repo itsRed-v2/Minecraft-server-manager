@@ -1,0 +1,11 @@
+# Configuration and secrets
+secrets.json
+servers.json
+
+# Folder in which minecraft servers are located
+servers/
+# Transpiled typescript
+dist/
+
+# Does this need a comment
+node_modules/
