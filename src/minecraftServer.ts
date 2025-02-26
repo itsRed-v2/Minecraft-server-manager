@@ -71,6 +71,7 @@ export class MinecraftServer {
             const runScriptPath = path.join(this._serverPath, 'run.sh');
             this._process = spawn(runScriptPath, { cwd: this._serverPath });
 
+            // Handle spawn failure
             this._process.on('error', err => {
                 console.error("Error when spawning minecraft server:");
                 console.error(err);
@@ -79,12 +80,22 @@ export class MinecraftServer {
                 res(false);
             });
 
+            // Handle spawn success
             this._process.on('spawn', () => {
                 res(true);
-                this._state = 'Running';
                 console.log(`Server "${this._name}" just started.`);
             });
 
+            // Checking for the message 'Done' in servers logs,
+            // indicating the server finished starting.
+            this._process.stdout.on('data', (chunk: Buffer) => {
+                if (chunk.toString().match(/Done \(.*\)! For help, type "help"/)) {
+                    this._state = 'Running';
+                    console.log(`Server "${this._name}" finished starting.`);
+                }
+            });
+
+            // Handle process exit
             this._process.on('exit', () => {
                 this._process = undefined;
                 this._state = 'Stopped';
