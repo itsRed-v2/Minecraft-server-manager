@@ -51,7 +51,7 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
             }]
         });
     } else {
-        interaction.reply({
+        interaction.editReply({
             embeds: [{
                 description: ":warning: Une erreur est survenue lors de l'arrêt du serveur.",
                 color: 0xa51d2d

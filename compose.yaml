@@ -1,10 +1,9 @@
 services:
   servers:
     build: .
-    command: "node dist/index.js"
+    command: "node dist/src/index.js"
     ports:
-      - "25565:25565"
-      - "25575:25575"
+      - "25565-25689:25565-25689"
     volumes:
       - "./package.json:/code/package.json"
       - "./package-lock.json:/code/package-lock.json"

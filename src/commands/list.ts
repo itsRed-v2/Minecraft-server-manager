@@ -25,7 +25,8 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
         for (const server of servers) {
             let statusString = stateTranslation.get(server.state) as string;
             if (server.state == 'Running') {
-                statusString += `, ${server.playerCount()}/${server.maxPlayers()} joueurs`;
+                const status = await server.lookupStatus();
+                statusString += `, ${status.players.online}/${status.players.max} joueurs`;
             }
             embed.addFields({
                 name: server.name,

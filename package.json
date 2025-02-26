@@ -3,7 +3,11 @@
     "@types/node": "^22.13.4",
     "discord.js": "^14.18.0",
     "minecraftstatuspinger": "^1.2.1",
+    "properties-reader": "^2.3.0",
     "typescript": "^5.7.3"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/properties-reader": "^2.1.3"
+  }
 }
