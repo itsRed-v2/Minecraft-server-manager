@@ -4,7 +4,7 @@ import mc from 'minecraftstatuspinger';
 import fs from 'node:fs';
 import path from 'node:path';
 
-export type ServerState = 'Running' | 'Stopped' | 'Starting' | 'Stopping' | 'Rebooting';
+export type ServerState = 'Running' | 'Stopped' | 'Starting' | 'Stopping';
 type PlayerSample = {
     name: string,
     id: string

@@ -7,7 +7,6 @@ const stateTranslation = new Collection<ServerState, string>([
     ['Stopped', '<:Offline:1343629125994287247> Hors ligne'],
     ['Starting', '<:Online:1343628871022678167> Démarrage...'],
     ['Stopping', '<:Offline:1343629125994287247> Arrêt en cours...'],
-    ['Rebooting', '<:Online:1343628871022678167> Redémarrage en cours...']
 ]);
 
 const data = new SlashCommandBuilder()
