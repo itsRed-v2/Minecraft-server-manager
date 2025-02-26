@@ -1,13 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, Collection } from "discord.js";
-import type { MinecraftServer, ServerState } from "../minecraftServer.js";
+import type { MinecraftServer } from "../minecraftServer.js";
 import type { Command } from "../command.js";
-
-const stateTranslation = new Collection<ServerState, string>([
-    ['Running', '<:Online:1343628871022678167> En ligne'],
-    ['Stopped', '<:Offline:1343629125994287247> Hors ligne'],
-    ['Starting', '<:Online:1343628871022678167> Démarrage...'],
-    ['Stopping', '<:Offline:1343629125994287247> Arrêt en cours...'],
-]);
 
 const data = new SlashCommandBuilder()
     .setName("list")
@@ -22,11 +15,13 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
         embed.setDescription('Aucun serveur disponible... Désolé.');
     } else {
         for (const server of servers) {
-            let statusString = stateTranslation.get(server.state) as string;
+            let statusString = server.getStateMessage();
+
             if (server.state == 'Running') {
                 const status = await server.lookupStatus();
                 statusString += `, ${status.players.online}/${status.players.max} joueurs`;
             }
+            
             embed.addFields({
                 name: server.name,
                 value: statusString

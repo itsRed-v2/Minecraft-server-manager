@@ -5,6 +5,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 export type ServerState = 'Running' | 'Stopped' | 'Starting' | 'Stopping';
+
 type PlayerSample = {
     name: string,
     id: string
@@ -55,6 +56,23 @@ export class MinecraftServer {
 
     get name() {
         return this._name;
+    }
+
+    get port() {
+        return this._serverPort;
+    }
+
+    public getStateMessage(): string {
+        switch (this.state) {
+            case 'Running':
+                return '<:Online:1343628871022678167> En ligne';
+            case 'Stopped':
+                return '<:Offline:1343629125994287247> Hors ligne';
+            case 'Starting':
+                return '<:Online:1343628871022678167> Démarrage...';
+            case 'Stopping':
+                return '<:Offline:1343629125994287247> Arrêt en cours...';
+        };
     }
 
     public start(): Promise<boolean> {

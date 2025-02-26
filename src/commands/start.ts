@@ -4,10 +4,10 @@ import type { Command } from "../command.js";
 
 const data = new SlashCommandBuilder()
     .setName('start')
-    .setDescription('Start a minecraft server')
+    .setDescription('Démarre un serveur minecraft')
     .addStringOption(option => 
         option.setName('server')
-        .setDescription('The server to start')
+        .setDescription('Le serveur à démarrer')
         .setRequired(true)
     );
 

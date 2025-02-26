@@ -4,10 +4,10 @@ import type { Command } from "../command.js";
 
 const data = new SlashCommandBuilder()
     .setName('stop')
-    .setDescription('Stop a minecraft server')
+    .setDescription('Arrête un serveur minecraft')
     .addStringOption(option => 
         option.setName('server')
-        .setDescription('The server to stop')
+        .setDescription('Le serveur à arrêter')
         .setRequired(true)
     );
 
