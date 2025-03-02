@@ -16,7 +16,7 @@ const serversFolderPath = path.join(import.meta.dirname, '../../servers');
 export class MinecraftServer {
     private _name: string;
     private _serverPath: string;
-    private _state: ServerState = 'Stopped';
+    private _state: ServerState;
     private _process: ChildProcessWithoutNullStreams | undefined;
     private _serverPort: number;
     private _isPublic: boolean;
@@ -24,16 +24,20 @@ export class MinecraftServer {
     constructor(name: string, folderName: string, isPublic: boolean) {
         this._name = name;
         this._isPublic = isPublic;
+        this._state = 'Stopped';
 
         this._serverPath = path.join(serversFolderPath, folderName);
         console.log("Path:", this._serverPath);
 
-        if (!fs.lstatSync(this._serverPath).isDirectory()) {
-            console.error("Error: cannot create server instance at", this._serverPath, 
-                "because it is not a directory.");
+        if (!fs.existsSync(this._serverPath) || !fs.lstatSync(this._serverPath).isDirectory()) {
+            throw new Error("Cannot create server instance at " + this._serverPath + 
+                " because it does not exist or is not a directory.");
         }
 
         this._serverPort = this.readPort();
+        if (this._serverPort == -1) {
+            throw new Error("Cannot create server instance: invalid port");
+        }
     }
 
     private readPort(): number {

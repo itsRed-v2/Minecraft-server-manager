@@ -12,7 +12,11 @@ import { MinecraftServer } from './minecraftServer.js';
 
 const servers: MinecraftServer[] = [];
 for (const serverData of config.servers) {
-    servers.push(new MinecraftServer(serverData.name, serverData.folder, serverData.isPublic));
+    try {
+        servers.push(new MinecraftServer(serverData.name, serverData.folder, serverData.isPublic));
+    } catch (err) {
+        console.error(err);
+    }
 }
 
 // Creating discord client
@@ -25,8 +29,11 @@ client.once(Events.ClientReady, readyClient => {
 // Setting up graceful shutdown
 function onTerminate(signal: NodeJS.Signals) {
     console.log(`Received signal ${signal}, gracefully stopping...`);
-    client.destroy();
-    Promise.all(servers.map(server => server.stop())).then(() => {
+    
+    const promises: Promise<any>[] = servers.map(server => server.stop());
+    promises.push(client.destroy());
+
+    Promise.all(promises).then(() => {
         console.log('Everything shut down, exiting.');
         process.exit();
     });
