@@ -1,4 +1,4 @@
-import { ChatInputCommandInteraction, SharedSlashCommand } from "discord.js";
+import { ChatInputCommandInteraction, MessageFlags, SharedSlashCommand } from "discord.js";
 import type { MinecraftServer } from "./minecraftServer.js";
 import config from '../config.json' with { type: 'json' };
 
@@ -20,14 +20,15 @@ function requireServerArgument(
     callback: (server: MinecraftServer) => void
 ) {
     const serverName = interaction.options.getString('server');
-    const server = servers.find(s => serverName == s.name);
+    const server = servers.find(s => serverName?.toLowerCase() === s.name.toLowerCase());
 
     if (server == undefined) {
         interaction.reply({
             embeds: [{
                 description: `Aucun serveur ne se nomme "${serverName}"`,
                 color: 0xed333b
-            }]
+            }],
+            flags: MessageFlags.Ephemeral
         })
         return;
     }
