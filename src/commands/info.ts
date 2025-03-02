@@ -2,6 +2,7 @@ import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "
 import serversConfig from '../../servers.json' with { type: 'json' };
 import type { MinecraftServer } from "../minecraftServer.js";
 import { requireServerArgument, type Command } from "../command.js";
+import { format } from "node:util";
 
 const data = new SlashCommandBuilder()
     .setName('info')
@@ -43,10 +44,17 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
 			}
 		
 			if (status.players.online !== undefined && status.players.max !== undefined) {
-				embed.addFields({
-					name: 'Joueurs',
-					value: status.players.online + '/' + status.players.max
-				});
+				if (status.players.sample !== undefined && status.players.sample.length !== 0) {
+					embed.addFields({
+						name: format('Joueurs (%d/%d)', status.players.online, status.players.max),
+						value: status.players.sample.map(player => player.name).join('\n')
+					});
+				} else {
+					embed.addFields({
+						name: 'Joueurs',
+						value: status.players.online + '/' + status.players.max
+					});
+				}
 			}
 		}
 
