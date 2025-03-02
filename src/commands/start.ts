@@ -23,6 +23,19 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
             interaction.reply(embeds.fail("On ne peut pas démarrer un serveur qui n'est pas à l'arrêt."));
             return;
         }
+
+        let runningPublicServers = 0;
+        for (const server of servers) {
+            if (server.isPublic && server.state !== 'Stopped') {
+                runningPublicServers++;
+            }
+        }
+
+        if (runningPublicServers >= 2) {
+            interaction.reply(embeds.fail("Trop de serveurs sont allumés en même temps, "
+                + "arrêtez en un pour en démarrer un autre."));
+            return;
+        }
     
         const success = await server.start();
         if (success) {
