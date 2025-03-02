@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import type { MinecraftServer } from "../minecraftServer.js";
-import { requireServerArgument, type Command } from "../command.js";
+import { isAdministrator, requireServerArgument, type Command } from "../commandUtils.js";
 
 const data = new SlashCommandBuilder()
     .setName('start')
@@ -13,6 +13,16 @@ const data = new SlashCommandBuilder()
 
 async function execute(interaction: ChatInputCommandInteraction, servers: MinecraftServer[]) {
     requireServerArgument(interaction, servers, async (server) => {
+
+        if (!server.isPublic && !isAdministrator(interaction.user.id)) {
+            interaction.reply({
+                embeds: [{
+                    description: "Vous n'avez pas la permission de démarrer ce serveur.",
+                    color: 0xed333b
+                }]
+            });
+            return;
+        }
 
         if (server.state != 'Stopped') {
             interaction.reply({

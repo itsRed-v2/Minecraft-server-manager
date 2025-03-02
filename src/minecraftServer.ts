@@ -19,9 +19,11 @@ export class MinecraftServer {
     private _state: ServerState = 'Stopped';
     private _process: ChildProcessWithoutNullStreams | undefined;
     private _serverPort: number;
+    private _isPublic: boolean;
 
-    constructor(name: string, folderName: string) {
+    constructor(name: string, folderName: string, isPublic: boolean) {
         this._name = name;
+        this._isPublic = isPublic;
 
         this._serverPath = path.join(serversFolderPath, folderName);
         console.log("Path:", this._serverPath);
@@ -60,6 +62,10 @@ export class MinecraftServer {
 
     get port() {
         return this._serverPort;
+    }
+
+    get isPublic() {
+        return this._isPublic;
     }
 
     public getStateMessage(): string {

@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import secrets from '../../secrets.json' with { type: 'json' };
 const { token, cliendId, guildId } = secrets;
-import type { Command } from '../command.js';
+import type { Command } from '../commandUtils.js';
 import { REST, Routes, SharedSlashCommand } from 'discord.js';
 
 const commands: SharedSlashCommand[] = [];

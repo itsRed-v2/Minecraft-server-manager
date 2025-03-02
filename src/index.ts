@@ -1,18 +1,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import secrets from '../secrets.json' with { type: 'json' };
-import serversConfig from '../servers.json' with { type: 'json' };
+import config from '../config.json' with { type: 'json' };
 import { 
     Client, Events, GatewayIntentBits, Collection,
     type Interaction
 } from 'discord.js';
 
-import type { Command } from './command.js';
+import type { Command } from './commandUtils.js';
 import { MinecraftServer } from './minecraftServer.js';
 
 const servers: MinecraftServer[] = [];
-for (const serverJson of serversConfig.servers) {
-    servers.push(new MinecraftServer(serverJson.name, serverJson.folder));
+for (const serverData of config.servers) {
+    servers.push(new MinecraftServer(serverData.name, serverData.folder, serverData.isPublic));
 }
 
 // Creating discord client

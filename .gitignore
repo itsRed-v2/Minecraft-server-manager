@@ -1,6 +1,6 @@
 # Configuration and secrets
 secrets.json
-servers.json
+config.json
 
 # Folder in which minecraft servers are located
 servers/

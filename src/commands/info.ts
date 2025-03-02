@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
-import serversConfig from '../../servers.json' with { type: 'json' };
+import config from '../../config.json' with { type: 'json' };
 import type { MinecraftServer } from "../minecraftServer.js";
-import { requireServerArgument, type Command } from "../command.js";
+import { requireServerArgument, type Command } from "../commandUtils.js";
 import { format } from "node:util";
 
 const data = new SlashCommandBuilder()
@@ -25,7 +25,7 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
 				inline: true
 			});
 
-		const addressMap = serversConfig.addresses as { [key: string]: string }
+		const addressMap = config.addresses as { [key: string]: string }
 		const address = addressMap[server.port.toString()];
 		embed.addFields({
 			name: 'Adresse',
@@ -47,16 +47,24 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
 				if (status.players.sample !== undefined && status.players.sample.length !== 0) {
 					embed.addFields({
 						name: format('Joueurs (%d/%d)', status.players.online, status.players.max),
-						value: status.players.sample.map(player => player.name).join('\n')
+						value: status.players.sample.map(player => player.name).join('\n'),
+						inline: true
 					});
 				} else {
 					embed.addFields({
 						name: 'Joueurs',
-						value: status.players.online + '/' + status.players.max
+						value: status.players.online + '/' + status.players.max,
+						inline: true
 					});
 				}
 			}
 		}
+
+		embed.addFields({
+			name: "Contrôle",
+			value: server.isPublic ? "public" : "restreint",
+			inline: true
+		})
 
 		interaction.reply({ embeds: [embed] });
 	});

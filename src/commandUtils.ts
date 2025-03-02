@@ -1,5 +1,6 @@
 import { ChatInputCommandInteraction, SharedSlashCommand } from "discord.js";
 import type { MinecraftServer } from "./minecraftServer.js";
+import config from '../config.json' with { type: 'json' };
 
 type Command = {
     data: SharedSlashCommand;
@@ -34,7 +35,12 @@ function requireServerArgument(
     callback(server);
 }
 
+function isAdministrator(id: string): boolean {
+    return (<string[]> config.administrators).includes(id);
+}
+
 export {
     type Command,
-    requireServerArgument
+    requireServerArgument,
+    isAdministrator
 }
