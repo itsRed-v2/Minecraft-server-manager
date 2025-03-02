@@ -1,6 +1,6 @@
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
+import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import type { MinecraftServer } from "../minecraftServer.js";
-import { isAdministrator, requireServerArgument, type Command } from "../commandUtils.js";
+import { embeds, isAdministrator, requireServerArgument, type Command } from "../commandUtils.js";
 
 const data = new SlashCommandBuilder()
     .setName('start')
@@ -15,40 +15,20 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
     requireServerArgument(interaction, servers, async (server) => {
 
         if (!server.isPublic && !isAdministrator(interaction.user.id)) {
-            interaction.reply({
-                embeds: [{
-                    description: "Vous n'avez pas la permission de démarrer ce serveur.",
-                    color: 0xed333b
-                }]
-            });
+            interaction.reply(embeds.fail("Vous n'avez pas la permission de démarrer ce serveur."));
             return;
         }
 
         if (server.state != 'Stopped') {
-            interaction.reply({
-                embeds: [{
-                    description: "On ne peut pas démarrer un serveur qui n'est pas à l'arrêt.",
-                    color: 0xed333b
-                }]
-            });
+            interaction.reply(embeds.fail("On ne peut pas démarrer un serveur qui n'est pas à l'arrêt."));
             return;
         }
     
         const success = await server.start();
         if (success) {
-            interaction.reply({
-                embeds: [{
-                    description: `✅ Démarrage de **${server.name}**.`,
-                    color: 0x2ec27e
-                }]
-            });
+            interaction.reply(embeds.success(`✅ Démarrage de **${server.name}**.`));
         } else {
-            interaction.reply({
-                embeds: [{
-                    description: ":warning: Une erreur est survenue lors du démarrage du serveur.",
-                    color: 0xa51d2d
-                }]
-            });
+            interaction.reply(embeds.error("Une erreur est survenue lors du démarrage du serveur."));
         }
 
     });

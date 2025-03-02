@@ -1,6 +1,6 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction } from "discord.js";
 import type { MinecraftServer } from "../minecraftServer.js";
-import { isAdministrator, requireServerArgument, type Command } from "../commandUtils.js";
+import { isAdministrator, embeds, requireServerArgument, type Command } from "../commandUtils.js";
 
 const data = new SlashCommandBuilder()
     .setName('stop')
@@ -15,47 +15,22 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
     requireServerArgument(interaction, servers, async (server) => {
 
         if (!server.isPublic && !isAdministrator(interaction.user.id)) {
-            interaction.reply({
-                embeds: [{
-                    description: "Vous n'avez pas la permission d'arrêter ce serveur.",
-                    color: 0xed333b
-                }]
-            });
+            interaction.reply(embeds.fail("Vous n'avez pas la permission d'arrêter ce serveur."));
             return;
         }
 
         if (server.state != 'Running') {
-            interaction.reply({
-                embeds: [{
-                    description: "On ne peut pas arrêter un serveur qui n'est pas allumé.",
-                    color: 0xed333b
-                }]
-            });
+            interaction.reply(embeds.fail("On ne peut pas arrêter un serveur qui n'est pas allumé."));
             return;
         }
     
-        interaction.reply({
-            embeds: [{
-                description: `:octagonal_sign: Arrêt de **${server.name}** en cours...`,
-                color: 0x2ec27e
-            }]
-        });
+        interaction.reply(embeds.success(`:octagonal_sign: Arrêt de **${server.name}** en cours...`));
     
         const success = await server.stop();
         if (success) {
-            interaction.editReply({
-                embeds: [{
-                    description: `:octagonal_sign: **${server.name}** est arrêté.`,
-                    color: 0x2ec27e
-                }]
-            });
+            interaction.editReply(embeds.success(`:octagonal_sign: **${server.name}** est arrêté.`));
         } else {
-            interaction.editReply({
-                embeds: [{
-                    description: ":warning: Une erreur est survenue lors de l'arrêt du serveur.",
-                    color: 0xa51d2d
-                }]
-            });
+            interaction.editReply(embeds.error("Une erreur est survenue lors de l'arrêt du serveur."));
         }
 
     });

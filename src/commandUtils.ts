@@ -39,8 +39,38 @@ function isAdministrator(id: string): boolean {
     return (<string[]> config.administrators).includes(id);
 }
 
+const embeds = {
+    fail(message: string) {
+        return {
+            embeds: [{
+                description: message,
+                color: 0xed333b
+            }]
+        }
+    },
+
+    success(message: string) {
+        return {
+            embeds: [{
+                description: message,
+                color: 0x2ec27e
+            }]
+        }
+    },
+    
+    error(message: string) {
+        return {
+            embeds: [{
+                description: ":warning: " + message,
+                color: 0xa51d2d
+            }]
+        }
+    }
+}
+
 export {
     type Command,
     requireServerArgument,
-    isAdministrator
+    isAdministrator,
+    embeds
 }
