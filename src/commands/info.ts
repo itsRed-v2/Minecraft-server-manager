@@ -1,7 +1,7 @@
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder } from "discord.js";
 import config from '../../config.json' with { type: 'json' };
 import type { MinecraftServer } from "../minecraftServer.js";
-import { requireServerArgument, type Command } from "../commandUtils.js";
+import { Color, requireServerArgument, type Command } from "../commandUtils.js";
 import { format } from "node:util";
 
 const data = new SlashCommandBuilder()
@@ -18,7 +18,7 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
 		
 		const embed = new EmbedBuilder()
 			.setTitle(server.name)
-			.setColor("#2ec27e")
+			.setColor(Color.GREEN)
 			.addFields({
 				name: 'Statut',
 				value: server.getStateMessage(),

@@ -39,12 +39,18 @@ function isAdministrator(id: string): boolean {
     return (<string[]> config.administrators).includes(id);
 }
 
+enum Color {
+    GREEN = 0x2ec27e,
+    RED = 0xed333b,
+    ERROR = 0xa51d2d
+}
+
 const embeds = {
     fail(message: string) {
         return {
             embeds: [{
                 description: message,
-                color: 0xed333b
+                color: Color.RED
             }]
         }
     },
@@ -53,7 +59,7 @@ const embeds = {
         return {
             embeds: [{
                 description: message,
-                color: 0x2ec27e
+                color: Color.GREEN
             }]
         }
     },
@@ -62,7 +68,7 @@ const embeds = {
         return {
             embeds: [{
                 description: ":warning: " + message,
-                color: 0xa51d2d
+                color: Color.ERROR
             }]
         }
     }
@@ -72,5 +78,6 @@ export {
     type Command,
     requireServerArgument,
     isAdministrator,
-    embeds
+    embeds,
+    Color,
 }
