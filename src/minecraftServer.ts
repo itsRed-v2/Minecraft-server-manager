@@ -125,9 +125,20 @@ export class MinecraftServer {
 
             // Handle process exit
             this._process.on('exit', () => {
+                const prevState = this._state;
                 this._process = undefined;
                 this._state = 'Stopped';
-                console.log(`Server "${this._name}" just exited.`);
+
+                if (prevState === 'Starting') {
+                    console.log(`[WARN] Server "${this._name}" exited during startup.`);
+                } else if (prevState === 'Stopping') {
+                    console.log(`Server "${this._name}" just exited.`);
+                } else if (prevState === 'Running') {
+                    console.log(`Server "${this._name}" exited by itself: restarting...`);
+                    this.start();
+                } else if (prevState === 'Stopped') {
+                    console.error(`[WARN] Illegal state: Server "${this._name}" just exited but state was "Stopped"`);
+                }
             });
 
             // Update port in case it was modified since last boot
