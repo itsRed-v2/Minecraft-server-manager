@@ -28,7 +28,8 @@ try {
     console.log(`Started refreshing ${commands.length} commands.`);
 
     const data = await rest.put(
-        Routes.applicationGuildCommands(cliendId, guildId),
+        // Routes.applicationGuildCommands(cliendId, guildId),
+        Routes.applicationCommands(cliendId),
         { body: commands }
     ) as unknown[];
 

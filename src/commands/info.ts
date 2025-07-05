@@ -25,13 +25,21 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
 				inline: true
 			});
 
-		const addressMap = config.addresses as { [key: string]: string }
-		const address = addressMap[server.port.toString()];
-		embed.addFields({
-			name: 'Adresse',
-			value: address ? ('`' + address + '`') : ('xenocraft.fr:' + server.port),
-			inline: true
-		});
+		if (server.isUninitialized) {
+				embed.addFields({
+				name: 'Adresse',
+				value: "Le serveur n'est pas initialisé",
+				inline: true
+			});
+		} else {
+			const addressMap = config.addresses as { [key: string]: string }
+			const address = addressMap[server.port.toString()];
+			embed.addFields({
+				name: 'Adresse',
+				value: address ? ('`' + address + '`') : ('xenocraft.fr:' + server.port),
+				inline: true
+			});
+		}
 
 		if (server.state === 'Running') {
 			const status = await server.lookupStatus();

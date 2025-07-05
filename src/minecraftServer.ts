@@ -20,6 +20,7 @@ export class MinecraftServer {
     private _process: ChildProcessWithoutNullStreams | undefined;
     private _serverPort: number;
     private _isPublic: boolean;
+    private _serverUninitialized: boolean = false;
 
     constructor(name: string, folderName: string, isPublic: boolean) {
         this._name = name;
@@ -34,8 +35,16 @@ export class MinecraftServer {
                 " because it does not exist or is not a directory.");
         }
 
+        if (!fs.existsSync(path.join(this._serverPath, 'server.properties'))) {
+            this._serverUninitialized = true;
+            this._serverPort = -1;
+            console.log(`It seems like server "${this._name}" is not initialized (cannot find server.properties). `
+                + "Start the server to initialize it.");
+            return;
+        }
+
         this._serverPort = this.readPort();
-        if (this._serverPort == -1) {
+        if (this._serverPort === -1) {
             throw new Error("Cannot create server instance: invalid port");
         }
     }
@@ -72,6 +81,10 @@ export class MinecraftServer {
         return this._isPublic;
     }
 
+    get isUninitialized() {
+        return this._serverUninitialized;
+    }
+
     public getStateMessage(): string {
         switch (this.state) {
             case 'Running':
@@ -91,6 +104,21 @@ export class MinecraftServer {
 
             if (this._process !== undefined) {
                 console.error('Error: server is "stopped" but this._process is not undefined');
+                return false;
+            }
+
+            // Making sure server has a valid port or is uninitialized
+            if (this._serverUninitialized) {
+                if (fs.existsSync(path.join(this._serverPath, 'server.properties'))) {
+                    this._serverUninitialized = false;
+                    this._serverPort = this.readPort();
+                }
+            } else {
+                this._serverPort = this.readPort();
+            }
+
+            if (!this._serverUninitialized && this._serverPort === -1) {
+                console.error("Could not start server: invalid port");
                 return false;
             }
 
@@ -140,9 +168,6 @@ export class MinecraftServer {
                     console.error(`[WARN] Illegal state: Server "${this._name}" just exited but state was "Stopped"`);
                 }
             });
-
-            // Update port in case it was modified since last boot
-            this._serverPort = this.readPort();
         });
     }
 

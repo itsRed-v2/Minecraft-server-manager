@@ -15,6 +15,7 @@ for (const serverData of config.servers) {
     try {
         servers.push(new MinecraftServer(serverData.name, serverData.folder, serverData.isPublic));
     } catch (err) {
+        console.error("Error when creating server instance for", serverData.name, ":");
         console.error(err);
     }
 }

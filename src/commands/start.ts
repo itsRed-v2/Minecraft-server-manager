@@ -39,19 +39,22 @@ async function execute(interaction: ChatInputCommandInteraction, servers: Minecr
             return;
         }
 
-        // Port conflict checking
-        for (const otherServer of servers) {
-            if (server === otherServer) continue;
+        if (!server.isUninitialized) {
+            // Port conflict checking
+            for (const otherServer of servers) {
+                if (server === otherServer) continue;
+                if (otherServer.isUninitialized) continue;
 
-            if (otherServer.state !== 'Stopped' && server.port === otherServer.port) {
-                interaction.reply(embeds.fail(`Le serveur **${otherServer.name}** est `
-                    + `déjà démarré à l'adresse de **${server.name}**. `
-                    + "Impossible de démarrer en même temps deux serveurs qui ont "
-                    + "la même adresse."));
-                return;
+                if (otherServer.state !== 'Stopped' && server.port === otherServer.port) {
+                    interaction.reply(embeds.fail(`Le serveur **${otherServer.name}** est `
+                        + `déjà démarré à l'adresse de **${server.name}**. `
+                        + "Impossible de démarrer en même temps deux serveurs qui ont "
+                        + "la même adresse."));
+                    return;
+                }
             }
         }
-    
+
         // Finally starting the server
         const success = await server.start();
         if (success) {
